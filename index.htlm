@@ -1,0 +1,1302 @@
+import os
+import zipfile
+
+# Define the directory structure
+base_dir = "residence_le_renard"
+os.makedirs(base_dir, exist_ok=True)
+os.makedirs(os.path.join(base_dir, "css"), exist_ok=True)
+os.makedirs(os.path.join(base_dir, "js"), exist_ok=True)
+
+# 1. index.html
+index_html = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résidence Le Renard – Informations et Vie Collective</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-emoji">🦊</span>
+                <div class="logo-text">
+                    <span class="logo-title">Le Renard</span>
+                    <span class="logo-subtitle">Vie Collective</span>
+                </div>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Accueil</a></li>
+                    <li><a href="actualites.html">Actualités</a></li>
+                    <li><a href="travaux.html">Travaux</a></li>
+                    <li><a href="signalements.html">Entraide & Signalements</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="alert-banner">
+                    <span class="badge badge-alert">À la une</span>
+                    <p class="alert-text"><strong>Information urgente :</strong> ICI sera indiquée une information urgente si besoin (ex: coupure d'eau ou événement exceptionnel).</p>
+                </div>
+                
+                <div class="hero-card">
+                    <h1>Bienvenue sur le site de la résidence Le Renard !</h1>
+                    <p class="hero-lead">Ici, vous trouverez toutes les informations sur les travaux en cours, les événements à venir, et les moyens de participer à la vie collective. Ensemble, faisons de notre résidence un lieu agréable et solidaire !</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="home-content">
+            <div class="container grid-layout">
+                <div class="content-block calendar-block">
+                    <div class="block-header">
+                        <span class="block-icon">📅</span>
+                        <h2>Calendrier de la résidence</h2>
+                    </div>
+                    <div class="events-list">
+                        <div class="event-card">
+                            <div class="event-date">
+                                <span class="day">10</span>
+                                <span class="month">Juil</span>
+                            </div>
+                            <div class="event-details">
+                                <h3>Réunion du Conseil Syndical</h3>
+                                <p class="event-time">18h00 • Hall principal</p>
+                                <p class="event-desc">Ordre du jour : Bilan d'étape des travaux de rénovation et projet de composteur collectif.</p>
+                            </div>
+                        </div>
+                        <div class="event-card">
+                            <div class="event-date">
+                                <span class="day">18</span>
+                                <span class="month">Juil</span>
+                            </div>
+                            <div class="event-details">
+                                <h3>Atelier participatif Jardins</h3>
+                                <p class="event-time">10h00 • Espaces verts</p>
+                                <p class="event-desc">Aménagement des bordures et préparation de l'espace pour le futur composteur.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-block contact-block">
+                    <div class="block-header">
+                        <span class="block-icon">💬</span>
+                        <h2>Contacts & Échanges</h2>
+                    </div>
+                    <p class="contact-intro">Une question ou une suggestion pour la vie de la copropriété ? Utilisez les canaux officiels ci-dessous.</p>
+                    
+                    <div class="contact-links">
+                        <a href="mailto:conseil.syndical@residence.fr" class="contact-card">
+                            <div class="contact-icon">✉️</div>
+                            <div class="contact-info">
+                                <h4>Conseil Syndical</h4>
+                                <span class="contact-email">conseil.syndical@residence.fr</span>
+                                <p>Pour toute question officielle ou administrative.</p>
+                            </div>
+                        </a>
+                        
+                        <a href="mailto:site.residence@residence.fr?subject=Ajout%20d'information%20sur%20le%20site" class="contact-card">
+                            <div class="contact-icon">✨</div>
+                            <div class="contact-info">
+                                <h4>Contribuer au site</h4>
+                                <span class="contact-email">site.residence@residence.fr</span>
+                                <p>Proposer une actualité, une info ou une modification sur ce site.</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Résidence Le Renard — 30 appartements en transition énergétique.</p>
+            <p class="footer-tag">Espace collaboratif et éco-responsable</p>
+        </div>
+    </footer>
+</body>
+</html>
+"""
+
+# 2. actualites.html
+actualites_html = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualités — Résidence Le Renard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-emoji">🦊</span>
+                <div class="logo-text">
+                    <span class="logo-title">Le Renard</span>
+                    <span class="logo-subtitle">Vie Collective</span>
+                </div>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="actualites.html" class="active">Actualités</a></li>
+                    <li><a href="travaux.html">Travaux</a></li>
+                    <li><a href="signalements.html">Entraide & Signalements</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-padding">
+        <header class="page-header">
+            <span class="page-category">Le fil de la copropriété</span>
+            <h1>Dernières actualités</h1>
+            <p class="page-subtitle">Retrouvez ici les actions menées, les événements passés et la résolution des petits tracas du quotidien.</p>
+        </header>
+
+        <section class="news-feed">
+            <article class="news-item">
+                <div class="news-meta">
+                    <span class="news-date">15 Juin 2026</span>
+                    <span class="news-tag tag-success">Résolu</span>
+                </div>
+                <div class="news-content">
+                    <h2>Réparation de l'éclairage de l'allée Nord</h2>
+                    <p>Suite au signalement d'un résident la semaine dernière, l'électricien est intervenu. Les trois candélabres défectueux ont été réparés et équipés d'ampoules LED basse consommation, s'inscrivant dans notre démarche globale de sobriété énergétique.</p>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-meta">
+                    <span class="news-date">08 Juin 2026</span>
+                    <span class="news-tag tag-info">Vie collective</span>
+                </div>
+                <div class="news-content">
+                    <h2>Succès pour la Fête des Voisins 2026</h2>
+                    <p>Un grand merci aux nombreux participants de notre fête annuelle dans la cour centrale ! Ce moment d'échange chaleureux a permis d'accueillir au mieux les trois nouveaux foyers arrivés ce printemps. Les discussions autour des futurs espaces partagés ont été très fructueuses.</p>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-meta">
+                    <span class="news-date">24 Mai 2026</span>
+                    <span class="news-tag tag-work">Rénovation</span>
+                </div>
+                <div class="news-content">
+                    <h2>Finalisation de l'isolation du toit-terrasse</h2>
+                    <p>L'entreprise mandatée a terminé la pose des isolants haute performance sur le toit du bâtiment B. Cette étape cruciale va permettre de réduire de manière significative les pertes thermiques dès l'hiver prochain. Le calendrier prévisionnel global est parfaitement respecté.</p>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Résidence Le Renard — 30 appartements en transition énergétique.</p>
+            <p class="footer-tag">Espace collaboratif et éco-responsable</p>
+        </div>
+    </footer>
+</body>
+</html>
+"""
+
+# 3. travaux.html
+travaux_html = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi des Travaux — Résidence Le Renard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-emoji">🦊</span>
+                <div class="logo-text">
+                    <span class="logo-title">Le Renard</span>
+                    <span class="logo-subtitle">Vie Collective</span>
+                </div>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="actualites.html">Actualités</a></li>
+                    <li><a href="travaux.html" class="active">Travaux</a></li>
+                    <li><a href="signalements.html">Entraide & Signalements</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-padding">
+        <header class="page-header">
+            <span class="page-category">Transition Énergétique</span>
+            <h1>Suivi de la Rénovation</h1>
+            <p class="page-subtitle">Consultez en toute transparence l'état d'avancement du chantier, téléchargez les comptes-rendus et visualisez l'évolution de la résidence.</p>
+        </header>
+
+        <section class="grid-layout works-layout">
+            <div class="works-docs">
+                <div class="modern-card">
+                    <h2>📄 Comptes-rendus officiels</h2>
+                    <p class="card-intro">Retrouvez les bilans mensuels de notre maître d'œuvre téléchargeables au format PDF.</p>
+                    
+                    <ul class="download-list">
+                        <li>
+                            <div class="doc-icon">📎</div>
+                            <div class="doc-info">
+                                <span class="doc-title">Rapport d'avancement — Juin 2026</span>
+                                <span class="doc-meta">PDF • 2.4 Mo • Mis à jour le 15/06</span>
+                            </div>
+                            <a href="#" class="btn btn-secondary btn-sm">Télécharger</a>
+                        </li>
+                        <li>
+                            <div class="doc-icon">📎</div>
+                            <div class="doc-info">
+                                <span class="doc-title">Rapport d'avancement — Mai 2026</span>
+                                <span class="doc-meta">PDF • 1.8 Mo • Mis à jour le 18/05</span>
+                            </div>
+                            <a href="#" class="btn btn-secondary btn-sm">Télécharger</a>
+                        </li>
+                        <li>
+                            <div class="doc-icon">📎</div>
+                            <div class="doc-info">
+                                <span class="doc-title">Cahier des charges & Plan Global</span>
+                                <span class="doc-meta">PDF • 5.1 Mo • Document de référence</span>
+                            </div>
+                            <a href="#" class="btn btn-secondary btn-sm">Télécharger</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="works-gallery">
+                <div class="modern-card">
+                    <h2>📸 Évolution du chantier (Avant / Après)</h2>
+                    <p class="card-intro font-sm">Aperçu visuel des performances et de l'amélioration de notre cadre de vie.</p>
+                    
+                    <div class="gallery-grid">
+                        <div class="gallery-item">
+                            <h3>Façade Ouest (Isolation Thermique Extérieure)</h3>
+                            <div class="compare-container">
+                                <div class="img-box">
+                                    <div class="img-placeholder bg-dark-orange">Avant</div>
+                                    <span class="img-tag">Février 2026</span>
+                                </div>
+                                <div class="img-box">
+                                    <div class="img-placeholder bg-dark-green">Après (En cours)</div>
+                                    <span class="img-tag">Juin 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gallery-item">
+                            <h3>Sous-station de Chauffage</h3>
+                            <div class="compare-container">
+                                <div class="img-box">
+                                    <div class="img-placeholder bg-dark-orange">Anciennes chaudières</div>
+                                    <span class="img-tag">Mars 2026</span>
+                                </div>
+                                <div class="img-box">
+                                    <div class="img-placeholder bg-dark-green">Nouveau réseau raccordé</div>
+                                    <span class="img-tag">Mai 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Résidence Le Renard — 30 appartements en transition énergétique.</p>
+            <p class="footer-tag">Espace collaboratif et éco-responsable</p>
+        </div>
+    </footer>
+</body>
+</html>
+"""
+
+# 4. signalements.html
+signalements_html = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Collaboratif — Résidence Le Renard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-emoji">🦊</span>
+                <div class="logo-text">
+                    <span class="logo-title">Le Renard</span>
+                    <span class="logo-subtitle">Vie Collective</span>
+                </div>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="actualites.html">Actualités</a></li>
+                    <li><a href="travaux.html">Travaux</a></li>
+                    <li><a href="signalements.html" class="active">Entraide & Signalements</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container page-padding">
+        <header class="page-header">
+            <span class="page-category">Espace Citoyen & Entraide</span>
+            <h1>Vie collective & Initiatives</h1>
+            <p class="page-subtitle">Contribuez activement à la vie de la résidence. Signalez un problème technique pour intervention rapide, ou proposez des services, idées et entraide entre voisins pour un lieu de vie plus solidaire.</p>
+        </header>
+
+        <div class="grid-layout interactive-layout">
+            <section class="form-section">
+                <div class="modern-card">
+                    <h2>🌱 Formuler une démarche</h2>
+                    <p class="card-intro">Votre message sera automatiquement orienté vers le bon interlocuteur (Conseil Syndical ou Commission Entraide) selon sa nature.</p>
+                    
+                    <form id="action-form">
+                        <div class="form-group">
+                            <label for="form-nature">Nature de votre démarche :</label>
+                            <select id="form-nature" required>
+                                <option value="" disabled selected>-- Choisissez la catégorie --</option>
+                                <optgroup label="🛠️ Technique & Maintenance">
+                                    <option value="signalement">Signaler un problème (Panne, dégradation...)</option>
+                                    <option value="idee">Proposer une idée d'amélioration pour les espaces commun</option>
+                                </optgroup>
+                                <optgroup label="🤝 Vie de communauté & Entraide">
+                                    <option value="offre-service">Proposer un service aux résidents (ex: déchèterie, prêt d'outils)</option>
+                                    <option value="demande-aide">Demander un coup de main ponctuel</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-subject">Sujet succinct :</label>
+                            <input type="text" id="form-subject" placeholder="Ex: Voyage déchèterie samedi / Ampoule grillée hall B" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-location">Localisation / Appartement concerné :</label>
+                            <input type="text" id="form-location" placeholder="Ex: Hall B, 3ème étage, ou Votre n° d'appartement" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-desc">Description de votre proposition ou problème :</label>
+                            <textarea id="form-desc" rows="5" placeholder="Détaillez au maximum votre demande ou votre proposition pour faciliter la prise de contact..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Transmettre la démarche</button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="tracking-section">
+                <div class="modern-card">
+                    <h2>📋 Démarches et initiatives en cours</h2>
+                    <p class="card-intro">Suivi en direct des actions collectives et des résolutions techniques.</p>
+                    
+                    <div class="action-board">
+                        <div class="action-item-card">
+                            <div class="action-item-header">
+                                <span class="badge badge-service">Offre de service</span>
+                                <span class="action-date">Reçu le 21/06/2026</span>
+                            </div>
+                            <h3>Trajet Déchèterie ce samedi</h3>
+                            <p class="action-loc">Proposé par l'Appartement 14 (Bât. A)</p>
+                            <p class="action-text">"Je me rends à la déchèterie ce samedi matin avec mon utilitaire. Si vous avez de petits encombrants à évacuer, contactez-moi pour grouper !"</p>
+                            <div class="action-status">
+                                <span class="status-indicator status-active"></span> Actif / À saisir
+                            </div>
+                        </div>
+
+                        <div class="action-item-card">
+                            <div class="action-item-header">
+                                <span class="badge badge-problem">Signalement</span>
+                                <span class="action-date">Reçu le 19/06/2026</span>
+                            </div>
+                            <h3>Poignée de porte d'entrée lâche</h3>
+                            <p class="action-loc">Localisation : Hall d'entrée principal</p>
+                            <p class="action-text">La poignée extérieure commence à se désolidariser. Risque de blocage à terme.</p>
+                            <div class="action-status">
+                                <span class="status-indicator status-progress"></span> En cours de traitement
+                            </div>
+                        </div>
+
+                        <div class="action-item-card">
+                            <div class="action-item-header">
+                                <span class="badge badge-idea">Idée Collective</span>
+                                <span class="action-date">Reçu le 10/06/2026</span>
+                            </div>
+                            <h3>Mise en place d'une boîte à livres</h3>
+                            <p class="action-loc">Localisation : Sous l'auvent près des boîtes aux lettres</p>
+                            <p class="action-text">Proposition d'installer une étagère étanche partagée pour échanger nos romans et magazines.</p>
+                            <div class="action-status">
+                                <span class="status-indicator status-resolved"></span> Approuvé / En cours de création
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Résidence Le Renard — 30 appartements en transition énergétique.</p>
+            <p class="footer-tag">Espace collaboratif et éco-responsable</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
+"""
+
+# 5. css/style.css
+style_css = """/* --- VARIABLES ET THÈME MODERNISÉ --- */
+:root {
+    --primary-forest: #143626;     /* Vert forêt profond */
+    --primary-forest-light: #1e4d37;
+    --accent-fox: #ba4300;         /* Orange renard profond */
+    --accent-fox-light: #d65108;
+    --bg-light: #fbf9f6;           /* Fond blanc chaud / crème ultra-propre */
+    --card-bg: #ffffff;            /* Fond des cartes blanc pur */
+    
+    --text-main: #2b302c;          /* Texte sombre mais adouci */
+    --text-muted: #5c6460;         /* Texte secondaire */
+    --border-subtle: #e6eae7;      /* Bordures discrètes */
+    
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+    
+    --shadow-subtle: 0 4px 20px rgba(20, 54, 38, 0.04);
+    --shadow-hover: 0 10px 30px rgba(20, 54, 38, 0.08);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- RESET & BASES --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- COMPOSANTS BOUTONS --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--accent-fox);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-fox-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(186, 67, 0, 0.2);
+}
+
+.btn-secondary {
+    background-color: rgba(20, 54, 38, 0.06);
+    color: var(--primary-forest);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(20, 54, 38, 0.12);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+}
+
+/* --- EN-TÊTE DU SITE --- */
+.site-header {
+    background-color: var(--primary-forest);
+    padding: 1.25rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.logo-emoji {
+    font-size: 1.8rem;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    color: white;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.logo-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.main-nav a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition-smooth);
+}
+
+.main-nav a:hover, .main-nav a.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.main-nav a.active {
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* --- STRUCTURES DE PAGE GÉNÉRALES --- */
+.page-padding {
+    padding: 4rem 0;
+}
+
+.page-header {
+    margin-bottom: 3.5rem;
+    text-align: left;
+    max-width: 700px;
+}
+
+.page-category {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-fox);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-forest);
+    letter-spacing: -1px;
+    margin-bottom: 0.75rem;
+}
+
+.page-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* --- CARTES MODERNES --- */
+.modern-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-subtle);
+    border: 1px solid var(--border-subtle);
+}
+
+.modern-card h2 {
+    color: var(--primary-forest);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.3px;
+}
+
+.card-intro {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* --- PAGE ACCUEIL --- */
+.hero-section {
+    padding: 3.5rem 0 1.5rem 0;
+}
+
+.alert-banner {
+    background-color: #fff9f5;
+    border: 1px solid rgba(186, 67, 0, 0.15);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.alert-text {
+    font-size: 0.92rem;
+    color: #8a3200;
+}
+
+.hero-card {
+    background-color: var(--primary-forest);
+    color: white;
+    padding: 3.5rem;
+    border-radius: var(--radius-lg);
+    background-image: linear-gradient(135deg, var(--primary-forest) 0%, #0d2419 100%);
+    box-shadow: 0 10px 40px rgba(20, 54, 38, 0.15);
+}
+
+.hero-card h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-lead {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 300;
+    max-width: 850px;
+}
+
+.home-content {
+    padding: 2rem 0 5rem 0;
+}
+
+.block-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.block-icon {
+    font-size: 1.5rem;
+}
+
+.content-block h2 {
+    color: var(--primary-forest);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Calendrier d'Événements */
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.event-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-subtle);
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(20, 54, 38, 0.1);
+}
+
+.event-date {
+    background-color: rgba(20, 54, 38, 0.05);
+    color: var(--primary-forest);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 65px;
+    height: 65px;
+    border-radius: var(--radius-md);
+}
+
+.event-date .day {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.event-date .month {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.event-details h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.event-time {
+    font-size: 0.85rem;
+    color: var(--accent-fox);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.event-desc {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+}
+
+/* Contacts */
+.contact-intro {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-subtle);
+}
+
+.contact-card:hover {
+    border-color: var(--accent-fox);
+    transform: scale(1.01);
+}
+
+.contact-icon {
+    font-size: 1.3rem;
+    background-color: rgba(186, 67, 0, 0.06);
+    color: var(--accent-fox);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.contact-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.15rem;
+}
+
+.contact-email {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--accent-fox);
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+}
+
+.contact-info p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* --- PAGE ACTUALITÉS --- */
+.news-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 850px;
+}
+
+.news-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-subtle);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+}
+
+.news-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.news-date {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.news-content h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-forest);
+    margin-bottom: 0.75rem;
+}
+
+/* --- PAGE TRAVAUX --- */
+.works-layout {
+    grid-template-columns: 0.9fr 1.1fr;
+}
+
+.download-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.download-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.download-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.doc-icon {
+    font-size: 1.4rem;
+    color: var(--primary-forest);
+}
+
+.doc-info {
+    flex-grow: 1;
+}
+
+.doc-title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.doc-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.gallery-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.gallery-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-main);
+}
+
+.compare-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.img-box {
+    position: relative;
+}
+
+.img-placeholder {
+    height: 140px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.bg-dark-orange { background-color: #8c360b; }
+.bg-dark-green { background-color: #112d20; }
+
+.img-tag {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+/* --- PAGE SIGNALEMENTS ET ENTRAIDE --- */
+.interactive-layout {
+    grid-template-columns: 0.95fr 1.05fr;
+}
+
+/* Formulaire */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"], select, textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    transition: var(--transition-smooth);
+}
+
+input[type="text"]:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-forest);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(20, 54, 38, 0.08);
+}
+
+optgroup {
+    font-weight: 700;
+    padding: 0.5rem;
+}
+
+/* Board de Suivi */
+.action-board {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.action-item-card {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: var(--transition-smooth);
+}
+
+.action-item-card:hover {
+    border-color: rgba(20, 54, 38, 0.15);
+    background-color: white;
+    box-shadow: var(--shadow-subtle);
+}
+
+.action-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.action-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.action-item-card h3 {
+    font-size: 1.15rem;
+    color: var(--primary-forest);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.action-loc {
+    font-size: 0.85rem;
+    color: var(--accent-fox);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.action-text {
+    font-size: 0.92rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    font-style: italic;
+    background: white;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--border-subtle);
+}
+
+.action-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-active { background-color: var(--accent-fox); }
+.status-progress { background-color: #d4a373; }
+.status-resolved { background-color: #2a6f97; }
+
+/* --- BADGES ET TAGS --- */
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-alert { background-color: var(--accent-fox); color: white; }
+.badge-service { background-color: #eef9f3; color: #1e4d37; border: 1px solid rgba(30,77,55,0.15); }
+.badge-problem { background-color: #fff3f3; color: #b82c2c; border: 1px solid rgba(184,44,44,0.15); }
+.badge-idea { background-color: #edf7fc; color: #1a658f; border: 1px solid rgba(26,101,143,0.15); }
+
+.news-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.tag-success { background-color: #eef9f3; color: #1e4d37; }
+.tag-info { background-color: #edf7fc; color: #1a658f; }
+.tag-work { background-color: #fff9f5; color: #baa300; }
+
+/* --- FOOTER --- */
+.site-footer {
+    background-color: var(--primary-forest);
+    color: white;
+    padding: 3rem 0;
+    margin-top: 5rem;
+    border-top: 4px solid var(--accent-fox);
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+}
+
+.footer-tag {
+    font-style: italic;
+    font-weight: 300;
+}
+
+/* --- RESPONSIVE MODERNE --- */
+@media (max-width: 992px) {
+    .grid-layout, .works-layout, .interactive-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 1.25rem;
+        text-align: center;
+    }
+    .main-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .page-header h1, .hero-card h1 {
+        font-size: 2rem;
+    }
+    .news-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    .compare-container {
+        grid-template-columns: 1fr;
+    }
+    .footer-container {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+"""
+
+# 6. js/script.js
+script_js = """document.addEventListener("DOMContentLoaded", () => {
+    const actionForm = document.getElementById("action-form");
+    
+    if (actionForm) {
+        actionForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            
+            // Collect fields
+            const nature = document.getElementById("form-nature").value;
+            const subject = document.getElementById("form-subject").value;
+            const location = document.getElementById("form-location").value;
+            const description = document.getElementById("form-desc").value;
+            
+            // Define modern emails routing based on nature
+            let destEmail = "";
+            let natureLabel = "";
+            
+            if (nature === "signalement" || nature === "idee") {
+                // Administrative and technical routing
+                destEmail = "conseil.syndical@residence.fr";
+                natureLabel = nature === "signalement" ? "🔧 SIGNALEMENT" : "💡 IDÉE AMÉLIORATION";
+            } else if (nature === "offre-service" || nature === "demande-aide") {
+                // Mutual Aid & Community routing
+                destEmail = "entraide.lerenard@residence.fr";
+                natureLabel = nature === "offre-service" ? "🤝 OFFRE DE SERVICE" : "🙋 DEMANDE D'AIDE";
+            }
+            
+            // Format email contents natively
+            const emailSubject = encodeURIComponent(`[Site Le Renard] ${natureLabel} : ${subject}`);
+            const emailBody = encodeURIComponent(
+                `Bonjour,\\n\\nUne nouvelle démarche a été complétée sur le site web de la Résidence Le Renard.\\n\\n` +
+                `----------------------------------------\\n` +
+                `📌 NATURE : ${natureLabel}\\n` +
+                `🔑 SUJET : ${subject}\\n` +
+                `📍 LOCALISATION / LOGEMENT : ${location}\\n` +
+                `----------------------------------------\\n\\n` +
+                `📝 DESCRIPTION :\\n${description}\\n\\n` +
+                `Cordialement,\\nUn copropriétaire de la Résidence.`
+            );
+            
+            // Native open mail client
+            window.location.href = `mailto:${destEmail}?subject=${emailSubject}&body=${emailBody}`;
+            
+            // Elegant user visual feedback
+            alert(`Votre message est prêt ! Votre logiciel de messagerie va s'ouvrir pour envoyer la demande vers : ${destEmail}`);
+            actionForm.reset();
+        });
+    }
+});
+"""
+
+# 7. README.md
+readme_md = """# 🦊 Résidence Le Renard — Site Web Collectif & Éco-responsable
+
+Ce dépôt contient le code source complet d'un site web moderne et statique pour la **Résidence Le Renard** (30 appartements en cours de rénovation énergétique). 
+
+Le design adopte une direction artistique contemporaine avec des tons naturels profonds (Vert Forêt et Orange Renard sombres), une typographie géométrique soignée (`Plus Jakarta Sans`) et des cartes épurées et responsives.
+
+## 📁 Architecture des dossiers
